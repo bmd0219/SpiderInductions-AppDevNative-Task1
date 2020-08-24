@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ClockBMD</string>
+    <string name="alarm_name">Alarm</string>
+    <string name="timer_name">Timer</string>
+    <string name="stopwatch_name">Stopwatch</string>
+    <string name="set_alarm_button">SET ALARM</string>
+</resources>

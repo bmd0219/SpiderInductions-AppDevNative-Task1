@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/timer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:textSize="60sp"
+        android:layout_margin="50dp"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/edit_timer"
+        android:text="EDIT"
+        android:layout_margin="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timer_text_view"/>
+
+    <Button
+        android:id="@+id/start_pause_timer"
+        android:text="START"
+        android:layout_margin="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_timer"/>
+
+    <Button
+        android:id="@+id/reset_timer"
+        android:text="RESET"
+        android:layout_margin="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_pause_timer"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

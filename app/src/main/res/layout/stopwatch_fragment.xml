@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <Chronometer
+        android:id="@+id/chronometer_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="50sp"
+        android:layout_margin="50dp"/>
+
+    <Button
+        android:id="@+id/start_pause_chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/chronometer_view"
+        android:layout_margin="20dp"
+        android:text="START"/>
+
+    <Button
+        android:id="@+id/reset_chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/start_pause_chronometer"
+        android:layout_margin="20dp"
+        android:visibility="invisible"
+        android:text="RESET"/>
+
+<!--    <Button-->
+<!--        android:id="@+id/start_pause_chronometer"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_below="@+id/chronometer_view"-->
+<!--        android:layout_margin="15dp"-->
+<!--        android:text="START"/>-->
+
+</RelativeLayout>
