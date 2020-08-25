@@ -12,11 +12,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AlarmFragment.AlarmFragmentListener {
@@ -79,15 +82,24 @@ public class MainActivity extends AppCompatActivity implements AlarmFragment.Ala
 
     @Override
     public void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmForegroundService.class);
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        }
+        int minutes = c.get(Calendar.MINUTE);
+        int hours = c.get(Calendar.HOUR_OF_DAY);
+        int date = c.get(Calendar.DAY_OF_WEEK);
+        intent.putExtra("minutes", minutes);
+        intent.putExtra("hours", hours);
+        intent.putExtra("date", date);
+        Log.println(Log.ASSERT, "mainActivity", String.valueOf(c.getTimeInMillis()));
+
+        startService(intent);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//        }
 
     }
 
