@@ -15,55 +15,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.security.acl.LastOwnerException;
+
 public class StopwatchFragment extends Fragment {
 
     public static final String TAG = "StopWatchFragment";
 
     private Chronometer chronometer;
-    private TextView chronometerView;
+    private CharSequence chronometerView;
     private Button startPauseButton;
     private Button resetButton;
     private long pauseOffset;
-    private boolean running, wasReset;
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//
-//        super.onSaveInstanceState(outState);
-//        Log.println(Log.ASSERT, TAG, "OnSaveInstanceState" + pauseOffset);
-//        Log.println(Log.ASSERT, TAG, "OnSaveInstanceState" + running);
-//        Log.println(Log.ASSERT, TAG, "OnSaveInstanceState" + wasReset);
-//        Log.println(Log.ASSERT, TAG, "------------------------------------------------------");
-////        if(!wasReset && pauseOffset == 0) {
-////            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
-////        }
-//        outState.putLong("pauseOffset", pauseOffset);
-//        outState.putBoolean("running", running);
-//        outState.putBoolean("wasReset", wasReset);
-//    }
-
-
+    private boolean running;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.println(Log.ASSERT, TAG, "onActivityCreated");
-
-        if(savedInstanceState != null) {
-
-//            pauseOffset = savedInstanceState.getLong("pauseOffset");
-//            running = savedInstanceState.getBoolean("running");
-//            wasReset = savedInstanceState.getBoolean("wasReset");
-
-//            Log.println(Log.ASSERT, TAG, "OnActivityCreated" + pauseOffset);
-//            Log.println(Log.ASSERT, TAG, "OnActivityCreated" + running);
-//            Log.println(Log.ASSERT, TAG, "OnActivityCreated" + wasReset);
-//            Log.println(Log.ASSERT, TAG, "------------------------------------------------------");
-
-//            if(pauseOffset != 0) {
-//                startChronometer();
-//            }
-        }
     }
 
     @Override
@@ -75,13 +43,17 @@ public class StopwatchFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.stopwatch_fragment,container, false);
-
-        Log.println(Log.ASSERT, TAG, "onCreateView");
-
-//        chronometer = new Chronometer(getContext());
+        View v = inflater.inflate(R.layout.stopwatch_fragment, container, false);
 
         chronometer = v.findViewById(R.id.chronometer_view);
+
+        if (chronometerView != null) {
+            Log.println(Log.ASSERT, TAG, String.valueOf(pauseOffset));
+            Log.println(Log.ASSERT, TAG, String.valueOf(running));
+            chronometer.setText(chronometerView);
+            running = !running;
+            startChronometer();
+        }
         startPauseButton = v.findViewById(R.id.start_pause_chronometer);
         resetButton = v.findViewById(R.id.reset_chronometer);
 
@@ -92,14 +64,14 @@ public class StopwatchFragment extends Fragment {
             }
         });
 
-//        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-//            @Override
-//            public void onChronometerTick(Chronometer chronometer) {
-//                int minutes = (int) chronometer.getBase() / 60000;
-//                int seconds = (int) chronometer.getBase() / 1000 % 60;
-//                chronometerView.setText(minutes + ":" + seconds);
-//            }
-//        });
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                chronometerView = chronometer.getText();
+                pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
+                Log.println(Log.ASSERT, TAG, String.valueOf(pauseOffset));
+            }
+        });
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +96,6 @@ public class StopwatchFragment extends Fragment {
             pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
             running = false;
         }
-        wasReset = false;
     }
 
     public void resetChronometer() {
@@ -134,54 +105,6 @@ public class StopwatchFragment extends Fragment {
         running = false;
         startPauseButton.setText("START");
         resetButton.setVisibility(View.INVISIBLE);
-        wasReset = true;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.println(Log.ASSERT, TAG, "onAttach");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.println(Log.ASSERT, TAG, "onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.println(Log.ASSERT, TAG, "onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.println(Log.ASSERT, TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.println(Log.ASSERT, TAG, "onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.println(Log.ASSERT, TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.println(Log.ASSERT, TAG, "onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.println(Log.ASSERT, TAG, "onDetach");
+        chronometerView = null;
     }
 }

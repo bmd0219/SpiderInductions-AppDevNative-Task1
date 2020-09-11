@@ -3,6 +3,9 @@ package com.example.clockbmd;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
 import android.os.Build;
 
 public class App extends Application {
@@ -23,6 +26,7 @@ public class App extends Application {
                     "Alarm Channel",
                     NotificationManager.IMPORTANCE_HIGH);
             alarmChannel.setDescription("This is the alarm channel");
+            alarmChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
 
             NotificationChannel timerChannel = new NotificationChannel(
                     CHANNEL_TIMER,

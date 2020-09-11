@@ -7,7 +7,8 @@
     android:gravity="center_horizontal">
 
     <TextView
-        android:hint="No Alarm has been set"
+        android:text="No Alarm has been set"
+        android:textColor="@android:color/black"
         android:textAlignment="center"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="100dp"
@@ -21,6 +22,14 @@
         android:id="@+id/set_alarm_button"
         android:text="@string/set_alarm_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"/>
+
+    <Button
+        android:id="@+id/delete_alarm_button"
+        android:text="@string/delete_alarm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"/>
 
 </LinearLayout>

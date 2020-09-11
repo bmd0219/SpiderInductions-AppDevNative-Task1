@@ -4,4 +4,5 @@
     <string name="timer_name">Timer</string>
     <string name="stopwatch_name">Stopwatch</string>
     <string name="set_alarm_button">SET ALARM</string>
+    <string name="delete_alarm_button">DELETE ALARM</string>
 </resources>

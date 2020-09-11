@@ -2,7 +2,7 @@ package com.example.clockbmd;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +14,12 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Objects;
 
 public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -31,18 +29,12 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
     private FragmentActivity myContext;
     private AlarmFragmentListener listener;
     private String alarmTextViewString;
-    private Calendar c;
+    public static final String SHARED_PREFS = "alarmSharedPrefs";
 
     public interface AlarmFragmentListener {
         void startAlarm(Calendar c);
+        void stopAlarm();
     }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("alarmTextView", alarmTextViewString);
-        super.onSaveInstanceState(outState);
-    }
-
 
     @Nullable
     @Override
@@ -52,14 +44,18 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         Log.println(Log.ASSERT, TAG, "onCreateView");
 
         alarmTextView = v.findViewById(R.id.alarm_textView);
-        Button setAlarmButton = v.findViewById(R.id.set_alarm_button);
 
-        if(savedInstanceState != null) {
-            alarmTextViewString = savedInstanceState.getString("alarmTextView");
-            if(alarmTextViewString != null) {
-                alarmTextView.setText(alarmTextViewString);
-            }
+        SharedPreferences sharedPreferences = myContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        if(sharedPreferences.contains("hours") && sharedPreferences.contains("minutes")) {
+            alarmTextView.setText("Alarm is set for: " + sharedPreferences.getInt("hours", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) + ":" + sharedPreferences.getInt("minutes", Calendar.getInstance().get(Calendar.MINUTE)));
         }
+
+        if(alarmTextViewString != null) {
+            alarmTextView.setText(alarmTextViewString);
+        }
+
+        Button setAlarmButton = v.findViewById(R.id.set_alarm_button);
+        Button deleteAlarmButton = v.findViewById(R.id.delete_alarm_button);
 
         setAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,12 +65,21 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
                 timePicker.show(myContext.getSupportFragmentManager(), "time picker");
                 }
             });
+
+        deleteAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alarmTextViewString = null;
+                alarmTextView.setText("No Alarm has been set");
+                listener.stopAlarm();
+            }
+        });
         return v;
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-        c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, i);
         c.set(Calendar.MINUTE, i1);
         c.set(Calendar.SECOND, 0);
@@ -100,60 +105,6 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         }
         super.onAttach(context);
         Log.println(Log.ASSERT, TAG, "onAttach");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.println(Log.ASSERT, TAG, "onCreate");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.println(Log.ASSERT, TAG, "onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.println(Log.ASSERT, TAG, "onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.println(Log.ASSERT, TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.println(Log.ASSERT, TAG, "onStop");
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.println(Log.ASSERT, TAG, "onActivityCreated");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.println(Log.ASSERT, TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.println(Log.ASSERT, TAG, "onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.println(Log.ASSERT, TAG, "onDetach");
     }
 }
 

@@ -1,26 +1,21 @@
 package com.example.clockbmd;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AlarmFragment.AlarmFragmentListener {
 
@@ -30,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements AlarmFragment.Ala
     private Fragment fragment;
     private int fragmentId;
     private FragmentManager fragmentManager;
+    public static final String SHARED_PREFS = "alarmSharedPrefs";
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -50,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements AlarmFragment.Ala
             fragmentId = R.id.alarm;
             fragmentManager.beginTransaction().replace(R.id.fragment_container, alarmFragment).commit();
         }
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -82,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements AlarmFragment.Ala
 
     @Override
     public void startAlarm(Calendar c) {
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmForegroundService.class);
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
@@ -90,17 +84,25 @@ public class MainActivity extends AppCompatActivity implements AlarmFragment.Ala
         int minutes = c.get(Calendar.MINUTE);
         int hours = c.get(Calendar.HOUR_OF_DAY);
         int date = c.get(Calendar.DAY_OF_WEEK);
-        intent.putExtra("minutes", minutes);
-        intent.putExtra("hours", hours);
-        intent.putExtra("date", date);
         Log.println(Log.ASSERT, "mainActivity", String.valueOf(c.getTimeInMillis()));
 
-        startService(intent);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("minutes", minutes);
+        editor.putInt("hours", hours);
+        editor.putInt("date", date);
+        editor.commit();
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//        }
+        ContextCompat.startForegroundService(this, intent);
+        Toast.makeText(this, "ALARM SET AT " + hours + ":" + minutes, Toast.LENGTH_SHORT).show();
+        Log.println(Log.ASSERT, "mainActivity", "startedService");
+    }
 
+    @Override
+    public void stopAlarm() {
+        Intent intent = new Intent(this, AlarmForegroundService.class);
+        stopService(intent);
+        Toast.makeText(this, "Alarm Deleted", Toast.LENGTH_SHORT).show();
     }
 
 }
